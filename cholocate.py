@@ -14,9 +14,6 @@ def main(page: ft.Page):
     tb2 = ft.TextField(label = " Room Temperature )", suffix_text="\u2103")
     tb3 = ft.TextField(label = "Beans Origin ")
     tb4 = ft.TextField(label = " Date ",read_only=True)
-    result_label = ft.Text("", color="black")
-
-    page.title = "Routes Example"
     
     def handle_change(e):
         if e.control.value:
@@ -36,7 +33,7 @@ def main(page: ft.Page):
             ft.View(
                 "/",
                 [   ft.ElevatedButton(
-            "Roaster info check",
+            "Date Select",
             icon=ft.Icons.CALENDAR_MONTH,
             on_click=lambda e: page.open(
                 ft.DatePicker(
@@ -48,17 +45,17 @@ def main(page: ft.Page):
             ),
         ),
                     tb4,tb1,tb2,tb3,
-                    ft.ElevatedButton("Next step", on_click=lambda _: page.go("/store")),
-                    ft.AppBar(title=ft.Text("Flet app"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                    ft.ElevatedButton("Next step", on_click=lambda _: page.go("/Example One")),
+                    ft.AppBar(title=ft.Text("Roaster Info check "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
                 ],
             )
         )
-        if page.route == "/store":
+        if page.route == "/Example One":
             page.views.append(
                 ft.View(
-                    "/store",
+                    "/Example One",
                     [
-                        ft.AppBar(title=ft.Text("Store"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.AppBar(title=ft.Text("Example One "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
                         ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
                     ],
                 )
