@@ -1,8 +1,8 @@
-import datetime
 import flet as ft
-
+import datetime
 
 def main(page: ft.Page):
+
     page.window_width = 375  # iPhone 标准宽度
     page.window_height = 812  # iPhone 高度（带刘海）
     page.horizontal_alignment = ft.CrossAxisAlignment.START
@@ -15,10 +15,8 @@ def main(page: ft.Page):
     tb3 = ft.TextField(label = "Beans Origin ")
     tb4 = ft.TextField(label = " Date ",read_only=True)
     result_label = ft.Text("", color="black")
-    
-    def roaster_info(e):
-        t.value = f"Textboxes values are:  '{tb1.value}', '{tb2.value}', '{tb3.value}',{tb4.value},"
-        page.update()
+
+    page.title = "Routes Example"
     
     def handle_change(e):
         if e.control.value:
@@ -32,9 +30,13 @@ def main(page: ft.Page):
             tb4.value = new_text
             tb4.update()
 
-    page.add(
-        ft.ElevatedButton(
-            "Pick date",
+    def route_change(route):
+        page.views.clear()
+        page.views.append(
+            ft.View(
+                "/",
+                [   ft.ElevatedButton(
+            "Roaster info check",
             icon=ft.Icons.CALENDAR_MONTH,
             on_click=lambda e: page.open(
                 ft.DatePicker(
@@ -45,7 +47,32 @@ def main(page: ft.Page):
                 )
             ),
         ),
-        tb4,tb1,tb2,tb3,
-        ft.ElevatedButton("Submit", on_click=roaster_info),
-    )
+                    tb4,tb1,tb2,tb3,
+                    ft.ElevatedButton("Next step", on_click=lambda _: page.go("/store")),
+                    ft.AppBar(title=ft.Text("Flet app"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                ],
+            )
+        )
+        if page.route == "/store":
+            page.views.append(
+                ft.View(
+                    "/store",
+                    [
+                        ft.AppBar(title=ft.Text("Store"), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                    ],
+                )
+            )
+        page.update()
+
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
+
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
+    page.go(page.route)
+
+
 ft.app(main)
