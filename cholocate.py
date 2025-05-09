@@ -1,7 +1,14 @@
+
 import flet as ft
 import datetime
 
+class BakingInfo:
+    time_info = ft.TextField(label = "Time") 
+    tempeature_info = ft.TextField(label = " Temperature )", suffix_text="\u2103")
+
 def main(page: ft.Page):
+    
+    bakingdeatil = BakingInfo()
 
     page.window_width = 375  # iPhone 标准宽度
     page.window_height = 812  # iPhone 高度（带刘海）
@@ -15,6 +22,9 @@ def main(page: ft.Page):
     tb3 = ft.TextField(label = "Beans Origin ")
     tb4 = ft.TextField(label = " Date ",read_only=True)
     
+    def check_info(e):
+        ...
+
     def handle_change(e):
         if e.control.value:
             new_text = f"{e.control.value.strftime('%m/%d/%Y')}"
@@ -29,47 +39,69 @@ def main(page: ft.Page):
 
     def route_change(route):
         page.views.clear()
-        page.views.append(
-            ft.View(
-                "/",
-                [   ft.ElevatedButton(
-            "Date Select",
-            icon=ft.Icons.CALENDAR_MONTH,
-            on_click=lambda e: page.open(
-                ft.DatePicker(
-                    first_date=datetime.datetime(year=2000, month=10, day=1),
-                    last_date=datetime.datetime(year=2025, month=10, day=1),
-                    on_change=handle_change,
-                    on_dismiss=handle_dismissal,
-                )
-            ),
-        ),
-                    tb4,tb1,tb2,tb3,
-                    ft.ElevatedButton("Next step", on_click=lambda _: page.go("/Example One")),
-                    ft.AppBar(title=ft.Text("Roaster Info check "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
-                ],
-            )
-        )
-        if page.route == "/Example One":
+        if page.route == "/":
             page.views.append(
                 ft.View(
-                    "/Example One",
-                    [
-                        ft.AppBar(title=ft.Text("Example One "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
-                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                    "/",
+                    [   ft.ElevatedButton(
+                "Date Select",
+                icon=ft.Icons.CALENDAR_MONTH,
+                on_click=lambda e: page.open(
+                    ft.DatePicker(
+                        first_date=datetime.datetime(year=2000, month=10, day=1),
+                        last_date=datetime.datetime(year=2025, month=10, day=1),
+                        on_change=handle_change,
+                        on_dismiss=handle_dismissal,
+                    )
+                ),
+            ),
+                        tb4,tb1,tb2,tb3,
+                        ft.ElevatedButton("Next step", on_click=lambda _: page.go("/Example One")),
+                        ft.AppBar(title=ft.Text("Roaster Info check "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
                     ],
                 )
             )
+        elif page.route == "/Example One":
+            page.views.append(
+                ft.View(
+                    "/Example One",
+                    [   bakingdeatil.time_info, bakingdeatil.tempeature_info,
+                        ft.AppBar(title=ft.Text("Example One "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                        ft.ElevatedButton("Next Example ", on_click=lambda _: page.go("/Example Two")),
+                    ],
+                )
+            )
+       
+        elif page.route == "/Example Two":
+            page.views.append(
+                ft.View(
+                    "/Example Two",
+                    [   bakingdeatil.time_info, bakingdeatil.tempeature_info,
+                        ft.AppBar(title=ft.Text("Example Two "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                        ft.ElevatedButton("Next Example ", on_click=lambda _: page.go("/Example Three")),
+                        ft.ElevatedButton("previous Example ", on_click=lambda _: page.go("/Example One")),
+                    ],
+                )
+            )
+        
+        elif page.route == "/Example Three":
+            page.views.append(
+                ft.View(
+                    "/Example Two",
+                    [   bakingdeatil.time_info, bakingdeatil.tempeature_info,
+                        ft.AppBar(title=ft.Text("Example Three "), bgcolor=ft.Colors.SURFACE_CONTAINER_HIGHEST),
+                        ft.ElevatedButton("Go Home", on_click=lambda _: page.go("/")),
+                        ft.ElevatedButton("Next Example ", on_click=lambda _: page.go("/Example Four")),
+                        ft.ElevatedButton("previous Example ", on_click=lambda _: page.go("/Example Three")),
+                    ],
+                )
+            )
+
         page.update()
-
-    def view_pop(view):
-        page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
-
+    
     page.on_route_change = route_change
-    page.on_view_pop = view_pop
-    page.go(page.route)
-
+    page.go("/")  # 设定起始页
 
 ft.app(main)
